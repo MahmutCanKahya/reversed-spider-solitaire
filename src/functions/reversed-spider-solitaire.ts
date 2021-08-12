@@ -203,7 +203,34 @@ export const selectCard = (
   var tempCard = card;
   // Handling select card by on click and drag and drop
   if (isObjectEmpty(game.selectedCard)) {
-    if (holder) return;
+    const x = game.decks.find((dck) => {
+      return dck.find((crd) => {
+        if (
+          checkMove(crd, dck, {
+            ...game,
+            selected: selected,
+            selectedCard: card,
+            selectedDeck: deck,
+          }) &&
+          crd.isDown === false
+        ) {
+          console.log("girdi");
+          return true;
+          /* */
+        }
+        return false;
+      });
+    });
+    if (x != null) {
+      moveCards(x, deck, card, setgame, game);
+
+      isHandComplete(deck, game, setgame);
+      removeSelection(game, setgame);
+      return;
+    }
+    if (holder) {
+      return;
+    }
     if (card.isDown) {
       return;
     }
@@ -222,25 +249,7 @@ export const selectCard = (
         selectedDeck: deck,
       }));
     }
-    /* const x = game.decks.forEach((dck) => {
-      return dck.forEach((crd) => {
-        if (
-          checkMove(crd, dck, {
-            ...game,
-            selected: selected,
-            selectedCard: card,
-            selectedDeck: deck,
-          })
-        ) {
-          console.log("girdi");
-          moveCards(dck, deck, card, setgame, game);
-
-          isHandComplete(deck, game, setgame);
-          removeSelection(game, setgame);
-          return;
-        }
-      });
-    }); */
+    /* */
   } else {
     // Handling moving of cards by click functionality
     if (checkMove(tempCard, deck, game)) {
