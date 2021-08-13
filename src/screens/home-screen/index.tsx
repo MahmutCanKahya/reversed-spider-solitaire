@@ -2,11 +2,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import routes from "../../utils/route-config.json";
 import {
-  BestScoreText,
-  BestScoreWrapper,
-  ButtonText,
-  PlayButton,
-  Wrapper,
+    BestScoreText,
+    BestScoreWrapper,
+    ButtonText,
+    PlayButton,
+    Wrapper
 } from "./styles";
 
 function HomeScreen() {
