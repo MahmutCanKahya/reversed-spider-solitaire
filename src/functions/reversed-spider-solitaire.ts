@@ -2,11 +2,13 @@ import * as _ from "lodash";
 import cardInfo from "../utils/card-config.json";
 import { CardType, GameType } from "../utils/types";
 
+// Oyunun başlangıcı için 8 destelik kart oluşturulur.
+//Bu kartlar karıştırılır ve yeni destelere ayrılır.
 export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
   let cards: CardType[] = [],
     decks;
   cardInfo["rank"].map((rank) => {
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 2; i++) {
       cards.push({
         rank: rank,
         suit: "spade",
@@ -19,10 +21,10 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
     }
   });
   let shuffledCards = _.shuffle(cards);
-  const firstSplit = _.chunk(shuffledCards.slice(0, 24), 6); //ilk 4lü deste 6 lı
-  const secondSplit = _.chunk(shuffledCards.slice(24, 54), 5); //son 6lı deste 5  erli
+  const firstSplit = _.chunk(shuffledCards.slice(0, 12), 2); //ilk 4lü deste 6 lı
+  const secondSplit = _.chunk(shuffledCards.slice(12, 16), 1); //son 6lı deste 5  erli
   decks = [...firstSplit, ...secondSplit];
-  decks[10] = shuffledCards.slice(54);
+  decks[10] = shuffledCards.slice(16);
   for (let i = 0; i <= 9; i++) {
     decks[i][decks[i].length - 1].isDown = false;
   }
@@ -32,6 +34,7 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
   };
 };
 
+//Oyun içerisinde seçilen ve hoverlanan kartın state üzerinde silinmesi
 export const removeSelection = (
   game: GameType,
   setgame: React.Dispatch<React.SetStateAction<GameType>>
@@ -56,12 +59,11 @@ export const removeSelection = (
       selectedDeck: [],
       highlightedCard: {} as CardType,
       highlightedDeck: [],
-      trueMatch: false,
     }));
   }
 };
 
-// Function to transfer cards from one deck to another
+//Seçili olan kartları bulundugu desteden hedeflenen desteye pushlar.
 export const moveCards = function (
   toDeck: CardType[],
   fromDeck: CardType[],
@@ -75,13 +77,16 @@ export const moveCards = function (
   var from = tempDeck.indexOf(fromDeck);
   var cardIdx = tempDeck[from].indexOf(fromCard);
 
+  // hareket eden kartları mevcut konumundan siler
   var movedCards = tempDeck[from].splice(cardIdx);
 
+  //hareket eden kartları yeni desteye pushlar
   movedCards.forEach((card) => {
     tempDeck[to].push(card);
   });
   try {
-    if (tempDeck[from][tempDeck[from].length - 1].isDown == true) {
+    //hareket ettikten sonra geriye kalan kartın yüzü çevrilir
+    if (tempDeck[from][tempDeck[from].length - 1].isDown === true) {
       tempDeck[from][tempDeck[from].length - 1].isDown = false;
     }
   } catch (err) {
@@ -93,7 +98,7 @@ export const moveCards = function (
   }));
 };
 
-// Function to return rank
+// String olarak girilen kart tipinin sayı olarak karışılığını döndürür.
 export const getRank = (rank: string) => {
   if (rank === "K" || rank === "Q" || rank === "J" || rank === "A") {
     switch (rank) {
@@ -110,7 +115,8 @@ export const getRank = (rank: string) => {
     return parseInt(rank);
   }
 };
-// Util function to check K Q J 10 .... 3 2 A Set is formed or not
+
+// Destenin kurala uygun dizilip dizilmediğinin kontrolü
 export const checkDeck = (deck: CardType[]) => {
   var ranks = deck.map((card) => {
     return getRank(card.rank);
@@ -121,7 +127,9 @@ export const checkDeck = (deck: CardType[]) => {
   }
   return false;
 };
-// Function to check K Q J 10 .... 3 2 A Set is formed or not
+
+// Formatın doğru olup olmadıgını tutar format doğruysa tamamlanan el sayısı artırılır ve
+// arda kalan kartlarda sonuncusu açık kalması için isDown false olur
 export const isHandComplete = (
   deck: CardType[],
   game: GameType,
@@ -133,6 +141,8 @@ export const isHandComplete = (
     var curDeckIdx = tempDecks.indexOf(deck);
     tempDecks[curDeckIdx].splice(len);
     var curHands = game.hands;
+
+    // Eğer sıralama doğruysa ve destede başka kart varsa sonuncuyu açık göstermek için isDown false
     if (tempDecks[curDeckIdx].length != 0) {
       tempDecks[curDeckIdx][tempDecks[curDeckIdx].length - 1].isDown = false;
     }
@@ -144,12 +154,13 @@ export const isHandComplete = (
       decks: tempDecks,
       hands: curHands + 1,
     }));
-    // Game over case
+    // Tamamlanan el sayısı 8 olunca oyun biter.
     if (curHands + 1 === 8) console.log("Game Over");
   }
 };
 
-// Function to check whether given card/cards can be selected to move or not
+// Parametre olarak girilen kart destesi içinden seçilen karttan sonraki kartlar ayrılır
+// ve altta kalan kartlar karşılaştırılır
 export const checkMovable = (card: CardType, deck: CardType[]) => {
   var tempDeck = [...deck];
   var movingCards = tempDeck.slice(deck.indexOf(card));
@@ -164,16 +175,16 @@ export const checkMovable = (card: CardType, deck: CardType[]) => {
   return true;
 };
 
-// Function to check whether current move to drop currently selected card to
-// a target is valid or not
+// selçilmiş olan kartın başka bir kartın üzerine eklenip eklenmeyeceğinin kontrolü yapılır;
 export const checkMove = (
   target: CardType,
   deck: CardType[],
   game: GameType
-) => {
+): boolean => {
   if (
-    target.suit === game.selectedCard.suit &&
-    getRank(target.rank) - getRank(game.selectedCard.rank) == -1
+    /*  target.suit === game.selectedCard.suit && */
+    getRank(target.rank) - getRank(game.selectedCard.rank) ===
+    -1
   ) {
     if (deck.indexOf(target) === deck.length - 1) {
       return true;
@@ -182,86 +193,7 @@ export const checkMove = (
   return false;
 };
 
-// Function to mantain Selection of cards
-// ( Also handles cases of select and drop in case of click events )
-export const selectCard = (
-  card: CardType,
-  deck: CardType[],
-  holder: any,
-  game: GameType,
-  setgame: React.Dispatch<React.SetStateAction<GameType>>
-) => {
-  // Handle drop of card on CardHolder(Blank) by click functionality
-
-  if (holder && !isObjectEmpty(game.selectedCard)) {
-    if (game.selectedCard.rank === "K") {
-      moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
-      isHandComplete(deck, game, setgame);
-      removeSelection(game, setgame);
-    }
-  }
-  var tempCard = card;
-  // Handling select card by on click and drag and drop
-  if (isObjectEmpty(game.selectedCard)) {
-    const x = game.decks.find((dck) => {
-      return dck.find((crd) => {
-        if (
-          checkMove(crd, dck, {
-            ...game,
-            selected: selected,
-            selectedCard: card,
-            selectedDeck: deck,
-          }) &&
-          crd.isDown === false
-        ) {
-          console.log("girdi");
-          return true;
-          /* */
-        }
-        return false;
-      });
-    });
-    if (x != null) {
-      moveCards(x, deck, card, setgame, game);
-
-      isHandComplete(deck, game, setgame);
-      removeSelection(game, setgame);
-      return;
-    }
-    if (holder) {
-      return;
-    }
-    if (card.isDown) {
-      return;
-    }
-
-    if (checkMovable(card, deck)) {
-      tempCard.isSelected = true;
-      var tempDeck = [...deck];
-      var selected = tempDeck.slice(deck.indexOf(card));
-      selected.forEach((curCard) => {
-        curCard.isSelected = true;
-      });
-      setgame((prevState) => ({
-        ...prevState,
-        selected: selected,
-        selectedCard: card,
-        selectedDeck: deck,
-      }));
-    }
-    /* */
-  } else {
-    // Handling moving of cards by click functionality
-    if (checkMove(tempCard, deck, game)) {
-      moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
-      isHandComplete(deck, game, setgame);
-      removeSelection(game, setgame);
-    } else {
-      removeSelection(game, setgame);
-    }
-  }
-};
-
+//hamle ve skor sayısı değiştirme
 export const setGameStatus = (
   score: number,
   move: boolean,
@@ -280,6 +212,92 @@ export const setGameStatus = (
   }));
 };
 
+//Seçilen bir kart yoksa seçili olarak işaretlenir. Eğer seçili kart varsa ilk seçilen
+//kartı 2. seçilen karta sürüklenip sürüklenemeceği kontrol edilir.
+export const selectCard = (
+  card: CardType,
+  deck: CardType[],
+  holder: any,
+  game: GameType,
+  setgame: React.Dispatch<React.SetStateAction<GameType>>
+) => {
+  //Eğer deste hiç yoksa ve seçilen kart boş değilsse seçilen kartı holdera aktarır
+  if (holder && !isObjectEmpty(game.selectedCard)) {
+    if (game.selectedCard.rank === "A") {
+      moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
+      isHandComplete(deck, game, setgame);
+      removeSelection(game, setgame);
+    }
+  }
+  var tempCard = card;
+
+  if (game.hint && card.isDown === false) {
+    for (let i = 0; i < game.decks.length - 1; i++) {
+      if (game.decks[i].length === 0 && card.rank === "A") {
+        moveCards(game.decks[i], deck, card, setgame, game);
+        isHandComplete(game.decks[i], game, setgame);
+        removeSelection(game, setgame);
+      }
+      for (let j = 0; j < game.decks[i].length; j++) {
+        const curCard = game.decks[i][j];
+        if (
+          getRank(curCard.rank) - getRank(card.rank) === -1 &&
+          checkMovable(card, deck) &&
+          checkMove(curCard, game.decks[i], {
+            ...game,
+            selectedCard: card,
+            selectedDeck: deck,
+          }) &&
+          curCard.isDown === false
+        ) {
+          moveCards(game.decks[i], deck, card, setgame, game);
+          isHandComplete(game.decks[i], game, setgame);
+          removeSelection(game, setgame);
+          return;
+        }
+      }
+    }
+    return;
+  }
+
+  if (isObjectEmpty(game.selectedCard)) {
+    if (holder) {
+      return;
+    }
+    if (card.isDown) {
+      return;
+    }
+    //eğer seçilen bir card yoksa, seçilen kart destede hareket ettiriliyormu diye
+    //kontrol edilir ve bu seçili kart listesini seçili olarak işaretler
+    if (checkMovable(card, deck)) {
+      tempCard.isSelected = true;
+      var tempDeck = [...deck];
+      var selected = tempDeck.slice(deck.indexOf(card));
+      selected.forEach((curCard) => {
+        curCard.isSelected = true;
+      });
+      setgame((prevState) => ({
+        ...prevState,
+        selected: selected,
+        selectedCard: card,
+        selectedDeck: deck,
+      }));
+    }
+    /* */
+  } else {
+    // Eğer selected card var ise bu seçili kart 2. seçilen kartın üstüne taşınıyormu
+    //diye kontrol eder ve kartı taşır.
+    if (checkMove(tempCard, deck, game)) {
+      moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
+      isHandComplete(deck, game, setgame);
+      removeSelection(game, setgame);
+    } else {
+      removeSelection(game, setgame);
+    }
+  }
+};
+
+//sürükleme başladıgında sürüklenen itemin x y eksenlerini setler
 export const dragStart = (
   event: any,
   card: CardType,
@@ -291,7 +309,6 @@ export const dragStart = (
   const y = event.pageY;
   event.dataTransfer?.setData("text", event.target.id);
   event.dataTransfer?.setDragImage(new Image(0, 0), -10, -10);
-  console.log(event);
   setgame((prevState) => ({
     ...prevState,
     x: x,
@@ -300,15 +317,16 @@ export const dragStart = (
   if (game.selectedCard === card) {
     return;
   }
+
+  //sürüklenecek kart selected olarak seçilir
   removeSelection(game, setgame);
   selectCard(card, deck, null, game, setgame);
 };
 
+//sürüklenen kartlar sürükleniyor olarak gözükmesini sağlayan css setlenir
 export const drag = (
-  event: any,
-  card: CardType,
-  game: GameType,
-  setgame: React.Dispatch<React.SetStateAction<GameType>>
+  event: React.DragEvent<HTMLDivElement>,
+  game: GameType
 ) => {
   game.selected.forEach((card) => {
     var child = document.getElementById(
@@ -329,37 +347,39 @@ export const drag = (
     child.style.cssText = css;
   });
 };
-
+//bir kartın üzerine gelince çalışan yer
 export const dragEnter = (
-  event: any,
   game: GameType,
   setgame: React.Dispatch<React.SetStateAction<GameType>>,
   card: CardType,
   deck: CardType[]
 ) => {
   var tempDecks = [...game.decks];
-  if (card === null && !isObjectEmpty(game.selectedCard)) {
+  if (isObjectEmpty(card) && !isObjectEmpty(game.selectedCard)) {
     tempDecks.forEach((deck) =>
       deck.forEach((tempCard) => {
         tempCard.isHighlighted = false;
         tempCard.isMatched = false;
       })
     );
-  } else if (card !== null && card != game.selectedCard) {
+  } else if (!isObjectEmpty(card) && card != game.selectedCard) {
     if (game.selected.indexOf(card) != -1) return;
+
     var deckIdx = tempDecks.indexOf(deck);
     var cardIdx = tempDecks[deckIdx].indexOf(card);
+
+    //son elemanın üstüne getirilmediyse fonksiyondan çıkar
     if (cardIdx != tempDecks[deckIdx].length - 1) return;
-    tempDecks.forEach((deck) =>
-      deck.forEach((tempCard) => {
+
+    tempDecks.map((deck) =>
+      deck.map((tempCard) => {
         tempCard.isHighlighted = false;
         tempCard.isMatched = false;
       })
     );
+
     tempDecks[deckIdx][cardIdx].isHighlighted = true;
 
-    console.log(getRank(tempDecks[deckIdx][cardIdx].rank));
-    console.log(getRank(game.selectedCard.rank));
     if (
       getRank(tempDecks[deckIdx][cardIdx].rank) -
         getRank(game.selectedCard.rank) ===
@@ -376,15 +396,16 @@ export const dragEnter = (
   }));
 };
 
+//sürükleme işlemi bitince yapılacak işlemler
 export const drop = (
   event: any,
   card: CardType,
   game: GameType,
   setgame: React.Dispatch<React.SetStateAction<GameType>>
 ) => {
-  // Case when deck is empty ( Drop event occurs on CardHolder )
   if (isObjectEmpty(game.highlightedCard)) {
-    if (card.rank == "K") {
+    //eğer boş bir destenin üstüne bırakılıyorsa ve bu bıraklan kart 'A' ise işleme devam eder
+    if (card.rank == "A") {
       if (checkMovable(game.selectedCard, game.selectedDeck)) {
         moveCards(
           game.highlightedDeck,
@@ -400,7 +421,7 @@ export const drop = (
       }
     }
   }
-  // Drop on cards Case
+  // eğer deste boş değilse bu sürüklenen destenin üstüne gelebiliyormu diye kontrol eder.
   if (checkMove(game.highlightedCard, game.highlightedDeck, game)) {
     if (checkMovable(game.selectedCard, game.selectedDeck)) {
       game.selected.forEach((card) => {
@@ -442,18 +463,16 @@ export const drop = (
   }
 };
 
-const isObjectEmpty = (obj: any): boolean => {
-  return Object.keys(obj).length == 0;
-};
-
-// Add remaining cards to decks
+//son kalan kartları 10 desteye birer birer dağıtır.
+//son olarak dağıttıktan sonra destenin tamamlanıp tamamlanmadıgı kontrolü için ishand
+// fonksiyonu çağrılır
 export const distributeRemCards = (
   game: GameType,
   setgame: React.Dispatch<React.SetStateAction<GameType>>
 ) => {
   if (game.decks[10].length !== 0) {
     var tempDecks = [...game.decks];
-    tempDecks.forEach(async (tempDeck) => {
+    tempDecks.forEach((tempDeck) => {
       if (tempDecks[10].length > 0) {
         var tempCard = tempDecks[10].pop();
         if (tempCard !== undefined) {
@@ -472,4 +491,9 @@ export const distributeRemCards = (
       isHandComplete(tempDeck, game, setgame);
     });
   }
+};
+
+//Obje boşmu kontrolü
+const isObjectEmpty = (obj: any): boolean => {
+  return Object.keys(obj).length == 0;
 };

@@ -32,7 +32,7 @@ function GameScreen() {
     highlightedCard: {} as CardType,
     numberOfMoves: 0,
     score: 500,
-    trueMatch: false,
+    hint: false,
   });
   useEffect(() => {
     const val = initGame();
@@ -56,7 +56,7 @@ function GameScreen() {
                 selectCard({} as CardType, deck, true, game, setgame);
               }}
               onDragEnter={(e) => {
-                dragEnter(e, game, setgame, {} as CardType, deck);
+                dragEnter(game, setgame, {} as CardType, deck);
               }}
             >
               <CardHolder key={index + " 1"} />
@@ -72,12 +72,12 @@ function GameScreen() {
                   onDragStart={(e) => {
                     dragStart(e, card, deck, game, setgame);
                   }}
-                  onDrag={(e) => {
-                    drag(e, card, game, setgame);
+                  onDrag={(e: React.DragEvent<HTMLDivElement>) => {
+                    drag(e, game);
                   }}
                   onDragEnter={(e) => {
-                    if (card.isDown == false) {
-                      dragEnter(e, game, setgame, card, deck);
+                    if (card.isDown === false) {
+                      dragEnter(game, setgame, card, deck);
                     }
                   }}
                   onDragEnd={(e) => {
@@ -96,7 +96,6 @@ function GameScreen() {
                     isDown={card.isDown}
                     isHighlighted={card.isHighlighted}
                     isSelected={card.isSelected}
-                    trueMatch={game.trueMatch}
                   />
                 </div>
               ))}
@@ -116,11 +115,21 @@ function GameScreen() {
             left: " 99vw",
           }}
         >
-          {_.chunk(game.decks[10], 10).map(() => {
-            return <div className="card__remcards"></div>;
+          {_.chunk(game.decks[10], 10).map((item, idx) => {
+            return <div key={idx} className="card__remcards"></div>;
           })}
         </div>
       )}
+      <label className="switch">
+        <input
+          type="checkbox"
+          onChange={() =>
+            setgame((prevstate) => ({ ...prevstate, hint: !prevstate.hint }))
+          }
+          checked={game.hint}
+        />
+        <span className="slider round"></span>
+      </label>
       <div
         style={{
           position: "absolute",

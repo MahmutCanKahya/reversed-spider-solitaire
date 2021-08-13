@@ -8,7 +8,6 @@ interface CardProps {
   isSelected: boolean;
   isDown: boolean;
   isHighlighted: boolean;
-  trueMatch: boolean;
 }
 
 export const Card: FC<CardProps> = ({
@@ -16,7 +15,6 @@ export const Card: FC<CardProps> = ({
   isSelected,
   isDown,
   isHighlighted,
-  trueMatch,
 }) => {
   const [down, setdown] = useState("");
   const [select, setselect] = useState("");

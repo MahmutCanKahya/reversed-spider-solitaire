@@ -17,9 +17,9 @@ export type GameType = {
   hands: number;
   x: number;
   y: number;
-  trueMatch: boolean;
   highlightedDeck: CardType[];
   highlightedCard: CardType;
   score: number;
   numberOfMoves: number;
+  hint: boolean;
 };
