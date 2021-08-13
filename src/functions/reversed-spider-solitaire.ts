@@ -4,11 +4,12 @@ import { CardType, GameType } from "../utils/types";
 
 // Oyunun başlangıcı için 8 destelik kart oluşturulur.
 //Bu kartlar karıştırılır ve yeni destelere ayrılır.
+
 export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
   let cards: CardType[] = [],
     decks;
   cardInfo["rank"].map((rank) => {
-    for (let i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 8; i++) {
       cards.push({
         rank: rank,
         suit: "spade",
@@ -21,10 +22,10 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
     }
   });
   let shuffledCards = _.shuffle(cards);
-  const firstSplit = _.chunk(shuffledCards.slice(0, 12), 2); //ilk 4lü deste 6 lı
-  const secondSplit = _.chunk(shuffledCards.slice(12, 16), 1); //son 6lı deste 5  erli
+  const firstSplit = _.chunk(shuffledCards.slice(0, 24), 6); //ilk 4lü deste 6 lı
+  const secondSplit = _.chunk(shuffledCards.slice(24, 54), 5); //son 6lı deste 5  erli
   decks = [...firstSplit, ...secondSplit];
-  decks[10] = shuffledCards.slice(16);
+  decks[10] = shuffledCards.slice(54);
   for (let i = 0; i <= 9; i++) {
     decks[i][decks[i].length - 1].isDown = false;
   }
