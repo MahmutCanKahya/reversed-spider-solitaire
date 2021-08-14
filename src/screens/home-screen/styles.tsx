@@ -15,7 +15,7 @@ export const Background = styled.img`
   height: 100%;
 `;
 
-export const PlayButton = styled.div`
+export const PlayButton = styled.button`
   border-radius: 32px;
   background-color: #202020;
   width: 300px;
@@ -24,7 +24,7 @@ export const PlayButton = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-
+  border: none;
   position: absolute;
   bottom: 8%;
   right: calc(50% + -150px);
