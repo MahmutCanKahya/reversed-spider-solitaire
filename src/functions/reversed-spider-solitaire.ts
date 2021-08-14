@@ -234,7 +234,11 @@ export const selectCard = (
 
   if (game.hint && card.isDown === false) {
     for (let i = 0; i < game.decks.length - 1; i++) {
-      if (game.decks[i].length === 0 && card.rank === "A") {
+      if (
+        game.decks[i].length === 0 &&
+        card.rank === "A" &&
+        checkMovable(card, deck)
+      ) {
         moveCards(game.decks[i], deck, card, setgame, game);
         isHandComplete(game.decks[i], game, setgame);
         removeSelection(game, setgame);
@@ -407,18 +411,20 @@ export const drop = (
   if (isObjectEmpty(game.highlightedCard)) {
     //eğer boş bir destenin üstüne bırakılıyorsa ve bu bıraklan kart 'A' ise işleme devam eder
     if (card.rank == "A") {
-      if (checkMovable(game.selectedCard, game.selectedDeck)) {
-        moveCards(
-          game.highlightedDeck,
-          game.selectedDeck,
-          game.selectedCard,
-          setgame,
-          game
-        );
-        isHandComplete(game.highlightedDeck, game, setgame);
-        removeSelection(game, setgame);
-      } else {
-        removeSelection(game, setgame);
+      if (!isObjectEmpty(game.selectedCard)) {
+        if (checkMovable(game.selectedCard, game.selectedDeck)) {
+          moveCards(
+            game.highlightedDeck,
+            game.selectedDeck,
+            game.selectedCard,
+            setgame,
+            game
+          );
+          isHandComplete(game.highlightedDeck, game, setgame);
+          removeSelection(game, setgame);
+        } else {
+          removeSelection(game, setgame);
+        }
       }
     }
   }
