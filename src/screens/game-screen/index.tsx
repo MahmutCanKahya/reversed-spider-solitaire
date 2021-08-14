@@ -1,9 +1,9 @@
-import _ from "lodash";
+import GameNavBar from "components/GameNavBar";
+import GameScoreBoard from "components/GameScoreBoard";
+import { getCurrentGame, saveGame } from "functions/local-storage";
+import _, { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import hintOff from "../../assets/hint-off.svg";
-import hintOn from "../../assets/hint-on.svg";
-import leftArrow from "../../assets/left-arrow.svg";
 import Card from "../../components/Card";
 import CardHolder from "../../components/CardHolder";
 import {
@@ -13,68 +13,61 @@ import {
   dragStart,
   drop,
   initGame,
+  removeSelection,
   selectCard,
 } from "../../functions/reversed-spider-solitaire";
 import { CardType, GameType } from "../../utils/types";
 import "./index.scss";
 
+export const INIT_GAME = {
+  cards: [],
+  decks: [],
+  selectedCard: {} as CardType,
+  selectedDeck: [],
+  selected: [],
+  hands: 0,
+  x: -1,
+  y: -1,
+  highlightedDeck: [],
+  highlightedCard: {} as CardType,
+  numberOfMoves: 0,
+  score: 500,
+  hint: false,
+};
+
 function GameScreen() {
-  const [cards, setcards] = useState<{
-    decks?: CardType[][];
-    cards?: CardType[];
-  }>({});
-  const [game, setgame] = useState<GameType>({
-    cards: [],
-    decks: [],
-    selectedCard: {} as CardType,
-    selectedDeck: [],
-    selected: [],
-    hands: 0,
-    x: -1,
-    y: -1,
-    highlightedDeck: [],
-    highlightedCard: {} as CardType,
-    numberOfMoves: 0,
-    score: 500,
-    hint: false,
-  });
+  const [game, setgame] = useState<GameType>(INIT_GAME);
   useEffect(() => {
-    const val = initGame();
-    setcards(val);
-    setgame((prevState: GameType) => ({
-      ...prevState,
-      cards: val.cards,
-      decks: val.decks,
-    }));
+    const localdata = getCurrentGame();
+    console.log(localdata);
+    if (isEmpty(localdata)) {
+      const val = initGame();
+      setgame((prevState: GameType) => ({
+        ...prevState,
+        cards: val.cards,
+        decks: val.decks,
+      }));
+    } else {
+      setgame(localdata);
+    }
   }, []);
+
+  // Hint açıldıgında seçili kart varsa resetler.
+  useEffect(() => {
+    removeSelection(game, setgame);
+  }, [game.hint]);
   const history = useHistory();
+
+  useEffect(() => {
+    saveGame(game);
+  }, [game]);
   console.log(game);
   return (
     <div className="game-wrapper">
-      <div className="game-top">
-        <div className="left-content">
-          <img
-            src={leftArrow}
-            alt="left-arrow"
-            onClick={() => history.goBack()}
-          />
-        </div>
-        <div className="right-content">
-          <div
-            className="hint"
-            onClick={() =>
-              setgame((prevstate) => ({ ...prevstate, hint: !prevstate.hint }))
-            }
-          >
-            <div className="hint-text">
-              {game.hint ? "Hint ON" : "Hint OFF"}
-            </div>
-            <img src={game.hint ? hintOn : hintOff} alt="hint" />
-          </div>
-        </div>
-      </div>
+      <GameNavBar setgame={setgame} hint={game.hint} />
       <div className="onesuite">
-        {cards.hasOwnProperty("decks") &&
+        {/* Eğer deste varsa 10 desteyi yanyana sıralar. */}
+        {game.decks &&
           game.decks.slice(0, 10).map((deck, index) =>
             deck.length == 0 ? (
               <div
@@ -96,7 +89,7 @@ function GameScreen() {
                     key={card.rank + " " + card.suit + " " + card.deck + " 0"}
                     id={card.rank + " " + card.suit + " " + card.deck}
                     className="card__wrapper card__stack"
-                    draggable={true}
+                    draggable={game.hint ? false : true}
                     onDragStart={(e) => {
                       dragStart(e, card, deck, game, setgame);
                     }}
@@ -139,22 +132,29 @@ function GameScreen() {
           }}
         >
           {Array.apply(null, Array(game.hands)).map(() => {
-            return <div className="card__complatedcards"></div>;
+            return (
+              <div style={{ marginRight: "-6vw" }}>
+                <Card
+                  isDown={false}
+                  isHighlighted={false}
+                  isSelected={false}
+                  card={{
+                    isDown: false,
+                    suit: "spade",
+                    deck: 1,
+                    rank: "1",
+                    isSelected: false,
+                    isHighlighted: false,
+                    isMatched: false,
+                  }}
+                ></Card>
+              </div>
+            );
           })}
         </div>
-        <div className="score-board">
-          <div className="text-row">
-            <div className="text-left">Score: </div>
-            <div className="text-left">Moves: </div>
-          </div>
-          <div className="text-row">
-            <div className="text-right">{game.score}</div>
-
-            <div className="text-right">{game.numberOfMoves}</div>
-          </div>
-        </div>
+        <GameScoreBoard score={game.score} moves={game.numberOfMoves} />
         <div>
-          {cards.hasOwnProperty("decks") && game.decks[10].length > 0 && (
+          {game.decks && game.decks[10]?.length > 0 && (
             <div
               onClick={(e) => {
                 distributeRemCards(game, setgame);

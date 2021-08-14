@@ -1,0 +1,25 @@
+.score-board {
+  display: flex;
+  height: 8.5vw;
+  width: 20vw;
+  background-color: #1b6fad;
+  border: 1px solid black;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  .column {
+    display: flex;
+    flex-direction: column;
+    .text-left {
+      text-align: right;
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 2.4rem;
+    }
+    .text-right {
+      font-size: 1.5rem;
+      line-height: 2.4rem;
+    }
+  }
+}

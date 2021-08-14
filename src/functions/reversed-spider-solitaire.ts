@@ -1,6 +1,8 @@
 import * as _ from "lodash";
+import { INIT_GAME } from "screens/game-screen";
 import cardInfo from "../utils/card-config.json";
 import { CardType, GameType } from "../utils/types";
+import { removeCurrentGame } from "./local-storage";
 
 // Oyunun başlangıcı için 8 destelik kart oluşturulur.
 //Bu kartlar karıştırılır ve yeni destelere ayrılır.
@@ -33,6 +35,14 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
     decks: decks,
     cards: shuffledCards,
   };
+};
+
+export const resetGame = (
+  setgame: React.Dispatch<React.SetStateAction<GameType>>
+) => {
+  removeCurrentGame();
+  const reset = initGame();
+  setgame({ ...INIT_GAME, decks: reset.decks, cards: reset.cards });
 };
 
 //Oyun içerisinde seçilen ve hoverlanan kartın state üzerinde silinmesi

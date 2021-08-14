@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import "./CardHolder.css";
+import "./CardHolder.scss";
 
 interface CardHolderProps {
   isHighlighted?: boolean;
