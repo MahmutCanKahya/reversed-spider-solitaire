@@ -429,23 +429,23 @@ export const drop = (
 ) => {
   if (isObjectEmpty(game.highlightedCard)) {
     //eğer boş bir destenin üstüne bırakılıyorsa ve bu bıraklan kart 'A' ise işleme devam eder
-    /* if (card.rank == "A") { */
-    if (!isObjectEmpty(game.selectedCard)) {
-      if (checkMovable(game.selectedCard, game.selectedDeck)) {
-        moveCards(
-          game.highlightedDeck,
-          game.selectedDeck,
-          game.selectedCard,
-          setgame,
-          game
-        );
-        isHandComplete(game.highlightedDeck, game, setgame);
-        removeSelection(game, setgame);
-      } else {
-        removeSelection(game, setgame);
+    if (card.rank == "A") {
+      if (!isObjectEmpty(game.selectedCard)) {
+        if (checkMovable(game.selectedCard, game.selectedDeck)) {
+          moveCards(
+            game.highlightedDeck,
+            game.selectedDeck,
+            game.selectedCard,
+            setgame,
+            game
+          );
+          isHandComplete(game.highlightedDeck, game, setgame);
+          removeSelection(game, setgame);
+        } else {
+          removeSelection(game, setgame);
+        }
       }
     }
-    /* } */
   }
   // eğer deste boş değilse bu sürüklenen destenin üstüne gelebiliyormu diye kontrol eder.
   if (checkMove(game.highlightedCard, game.highlightedDeck, game)) {
