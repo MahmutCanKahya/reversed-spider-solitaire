@@ -5,8 +5,6 @@
   background-size: cover;
 }
 
-
-
 .onesuite {
   display: flex;
   padding: 30px 0px;
@@ -23,4 +21,70 @@
   padding: 0px 2vw;
   bottom: 2vh;
   box-sizing: border-box;
+}
+
+.content {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  .title {
+    font-size: 3.5rem;
+    text-align: center;
+    font-weight: bold;
+  }
+  .score {
+    display: flex;
+    flex-direction: row;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+    .column {
+      display: flex;
+      flex-direction: column;
+
+      justify-content: center;
+      align-items: center;
+      .score-title {
+        font-size: 2rem;
+        line-height: 2.5rem;
+        color: #030303;
+        font-weight: bold;
+      }
+      .score-title2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 2.5rem;
+        color: rgb(95, 95, 95);
+      }
+    }
+  }
+
+  .button {
+    margin-top: 2rem;
+    width: 40%;
+    height: 4rem;
+    border: 1px solid #808080;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    border-radius: 32px;
+    background-color: #ffc900;
+    cursor: pointer;
+
+    .button-text {
+      color: black;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    &:hover {
+      opacity: 50%;
+    }
+  }
 }

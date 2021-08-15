@@ -28,3 +28,20 @@ body {
     font-size: 7.2px;
   }
 }
+.ReactModal__Overlay {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.ReactModal__Content {
+  position: relative !important;
+  border-radius: 32px !important;
+  border: none !important;
+  width: 40vw;
+  height: 30vw;
+  padding: 1rem !important;
+  color: #1b6fad;
+  overflow: hidden !important;
+}

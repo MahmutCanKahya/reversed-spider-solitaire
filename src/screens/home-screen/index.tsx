@@ -1,10 +1,15 @@
-import React from "react";
+import { getHighScore } from "functions/local-storage";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import routes from "../../utils/route-config.json";
 import "./index.scss";
 
 function HomeScreen() {
   const history = useHistory();
+  useEffect(() => {
+    const x = getHighScore();
+    console.log(x);
+  }, []);
   return (
     <div className="wrapper">
       <div className="best-score-wrapper">

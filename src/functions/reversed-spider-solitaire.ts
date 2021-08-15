@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { INIT_GAME } from "screens/game-screen";
 import cardInfo from "../utils/card-config.json";
 import { CardType, GameType } from "../utils/types";
-import { removeCurrentGame } from "./local-storage";
+import { getHighScore, removeCurrentGame, setHighScore } from "./local-storage";
 
 // Oyunun başlangıcı için 8 destelik kart oluşturulur.
 //Bu kartlar karıştırılır ve yeni destelere ayrılır.
@@ -157,7 +157,6 @@ export const isHandComplete = (
     if (tempDecks[curDeckIdx].length != 0) {
       tempDecks[curDeckIdx][tempDecks[curDeckIdx].length - 1].isDown = false;
     }
-
     setGameStatus(cardInfo.points.deskComplate, false, game, setgame);
 
     setgame((prevState) => ({
@@ -166,7 +165,17 @@ export const isHandComplete = (
       hands: curHands + 1,
     }));
     // Tamamlanan el sayısı 8 olunca oyun biter.
-    if (curHands + 1 === 8) console.log("Game Over");
+    if (curHands + 1 === 8) {
+      const curScore = game.score + cardInfo.points.deskComplate;
+
+      const highScore = getHighScore();
+      if (curScore > highScore) {
+        setHighScore(curScore);
+        console.log("Welldone High Score");
+      } else {
+        console.log("Game Over");
+      }
+    }
   }
 };
 
@@ -228,17 +237,17 @@ export const setGameStatus = (
 export const selectCard = (
   card: CardType,
   deck: CardType[],
-  holder: any,
+  holder: boolean,
   game: GameType,
   setgame: React.Dispatch<React.SetStateAction<GameType>>
 ) => {
-  //Eğer deste hiç yoksa ve seçilen kart boş değilsse seçilen kartı holdera aktarır
+  //Eğer deste kart  hiç yoksa ve seçilen kart boş değilsse seçilen kartı holdera aktarır
   if (holder && !isObjectEmpty(game.selectedCard)) {
-    if (game.selectedCard.rank === "A") {
-      moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
-      isHandComplete(deck, game, setgame);
-      removeSelection(game, setgame);
-    }
+    /* if (game.selectedCard.rank === "A") { */
+    moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
+    isHandComplete(deck, game, setgame);
+    removeSelection(game, setgame);
+    /* } */
   }
   var tempCard = card;
 
@@ -246,7 +255,7 @@ export const selectCard = (
     for (let i = 0; i < game.decks.length - 1; i++) {
       if (
         game.decks[i].length === 0 &&
-        card.rank === "A" &&
+        /* card.rank === "A" && */
         checkMovable(card, deck)
       ) {
         moveCards(game.decks[i], deck, card, setgame, game);
@@ -335,7 +344,7 @@ export const dragStart = (
 
   //sürüklenecek kart selected olarak seçilir
   removeSelection(game, setgame);
-  selectCard(card, deck, null, game, setgame);
+  selectCard(card, deck, false, game, setgame);
 };
 
 //sürüklenen kartlar sürükleniyor olarak gözükmesini sağlayan css setlenir
@@ -420,23 +429,23 @@ export const drop = (
 ) => {
   if (isObjectEmpty(game.highlightedCard)) {
     //eğer boş bir destenin üstüne bırakılıyorsa ve bu bıraklan kart 'A' ise işleme devam eder
-    if (card.rank == "A") {
-      if (!isObjectEmpty(game.selectedCard)) {
-        if (checkMovable(game.selectedCard, game.selectedDeck)) {
-          moveCards(
-            game.highlightedDeck,
-            game.selectedDeck,
-            game.selectedCard,
-            setgame,
-            game
-          );
-          isHandComplete(game.highlightedDeck, game, setgame);
-          removeSelection(game, setgame);
-        } else {
-          removeSelection(game, setgame);
-        }
+    /* if (card.rank == "A") { */
+    if (!isObjectEmpty(game.selectedCard)) {
+      if (checkMovable(game.selectedCard, game.selectedDeck)) {
+        moveCards(
+          game.highlightedDeck,
+          game.selectedDeck,
+          game.selectedCard,
+          setgame,
+          game
+        );
+        isHandComplete(game.highlightedDeck, game, setgame);
+        removeSelection(game, setgame);
+      } else {
+        removeSelection(game, setgame);
       }
     }
+    /* } */
   }
   // eğer deste boş değilse bu sürüklenen destenin üstüne gelebiliyormu diye kontrol eder.
   if (checkMove(game.highlightedCard, game.highlightedDeck, game)) {

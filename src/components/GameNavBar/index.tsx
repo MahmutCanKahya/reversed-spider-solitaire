@@ -1,5 +1,6 @@
 import { resetGame } from "functions/reversed-spider-solitaire";
-import React from "react";
+import React, { useState } from "react";
+import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
 import { GameType } from "utils/types";
 import hintOff from "../../assets/hint-off.svg";
@@ -14,8 +15,31 @@ interface GameNavBarProps {
 
 const GameNavBar: React.FC<GameNavBarProps> = ({ hint, setgame }) => {
   const history = useHistory();
+  const [isResetModalVisible, setIsResetModalVisible] = useState(false);
   return (
     <div className="game-top">
+      <Modal
+        isOpen={isResetModalVisible}
+        onRequestClose={() => setIsResetModalVisible(false)}
+        contentLabel="WellDone"
+      >
+        <div className="content">
+          <div className="title">
+            Are you sure you want to restart the game?
+          </div>
+
+          <div
+            className="button"
+            onClick={() => {
+              setIsResetModalVisible(false);
+              resetGame(setgame);
+            }}
+          >
+            <div className="button-text">Reset Game</div>
+          </div>
+        </div>
+      </Modal>
+
       <div className="left-content">
         <img
           src={leftArrow}
@@ -25,7 +49,7 @@ const GameNavBar: React.FC<GameNavBarProps> = ({ hint, setgame }) => {
       </div>
       <div className="title">REVERSED SPIDER SOLITAIRE</div>
       <div className="right-content">
-        <div className="reset" onClick={() => resetGame(setgame)}>
+        <div className="reset" onClick={() => setIsResetModalVisible(true)}>
           RESET GAME
         </div>
         <div

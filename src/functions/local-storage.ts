@@ -1,9 +1,9 @@
+import { isEmpty } from "lodash";
 import { GameType } from "utils/types";
 
 export const saveGame = (game: GameType) => {
   try {
     if (game.decks.length !== 0) setLocalStorage("game", game);
-    console.log("saved");
   } catch (error) {
     console.log(error);
   }
@@ -12,7 +12,6 @@ export const saveGame = (game: GameType) => {
 export const getCurrentGame = (): GameType => {
   try {
     const _game = getLocalStorage<GameType>("game");
-    console.log("saved");
     return _game;
   } catch (error) {
     console.log(error);
@@ -25,6 +24,28 @@ export const removeCurrentGame = () => {
     removeLocalStorage("game");
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const setHighScore = (highScore: number) => {
+  try {
+    setLocalStorage("highScore", highScore);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getHighScore = (): number => {
+  try {
+    const _highScore = getLocalStorage<number>("highScore");
+    console.log(_highScore);
+    return _highScore;
+    if (isEmpty(_highScore)) {
+      return 0;
+    }
+    return _highScore;
+  } catch (error) {
+    console.log(error);
+    return 0;
   }
 };
 
