@@ -177,7 +177,7 @@ function GameScreen() {
                     isDown: false,
                     suit: "spade",
                     deck: 1,
-                    rank: "1",
+                    rank: "A",
                     isSelected: false,
                     isHighlighted: false,
                     isMatched: false,

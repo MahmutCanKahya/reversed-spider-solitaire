@@ -430,7 +430,10 @@ export const drop = (
   if (isObjectEmpty(game.highlightedCard)) {
     //eğer boş bir destenin üstüne bırakılıyorsa ve bu bıraklan kart 'A' ise işleme devam eder
     if (card.rank == "A") {
-      if (!isObjectEmpty(game.selectedCard)) {
+      if (
+        !isObjectEmpty(game.selectedCard) &&
+        !isObjectEmpty(game.highlightedCard)
+      ) {
         if (checkMovable(game.selectedCard, game.selectedDeck)) {
           moveCards(
             game.highlightedDeck,
