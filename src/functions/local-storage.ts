@@ -1,4 +1,3 @@
-import { isEmpty } from "lodash";
 import { GameType } from "utils/types";
 
 export const saveGame = (game: GameType) => {
@@ -38,8 +37,8 @@ export const getHighScore = (): number => {
   try {
     const _highScore = getLocalStorage<number>("highScore");
     console.log(_highScore);
-    return _highScore;
-    if (isEmpty(_highScore)) {
+    if (typeof _highScore !== "number") {
+      console.log("sa");
       return 0;
     }
     return _highScore;

@@ -523,6 +523,6 @@ export const distributeRemCards = (
 };
 
 //Obje boşmu kontrolü
-const isObjectEmpty = (obj: any): boolean => {
+export const isObjectEmpty = (obj: any): boolean => {
   return Object.keys(obj).length == 0;
 };
