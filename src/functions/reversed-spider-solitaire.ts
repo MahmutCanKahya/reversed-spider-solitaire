@@ -31,6 +31,7 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
   for (let i = 0; i <= 9; i++) {
     decks[i][decks[i].length - 1].isDown = false;
   }
+  decks[0] = [];
   return {
     decks: decks,
     cards: shuffledCards,
@@ -429,25 +430,25 @@ export const drop = (
 ) => {
   if (isObjectEmpty(game.highlightedCard)) {
     //eğer boş bir destenin üstüne bırakılıyorsa ve bu bıraklan kart 'A' ise işleme devam eder
-    if (card.rank == "A") {
-      if (
-        !isObjectEmpty(game.selectedCard) &&
-        !isObjectEmpty(game.highlightedCard)
-      ) {
-        if (checkMovable(game.selectedCard, game.selectedDeck)) {
-          moveCards(
-            game.highlightedDeck,
-            game.selectedDeck,
-            game.selectedCard,
-            setgame,
-            game
-          );
-          isHandComplete(game.highlightedDeck, game, setgame);
-          removeSelection(game, setgame);
-        } else {
-          removeSelection(game, setgame);
-        }
+    /* if (card.rank == "A") { */
+    if (
+      !isObjectEmpty(game.selectedCard) &&
+      isObjectEmpty(game.highlightedCard)
+    ) {
+      if (checkMovable(game.selectedCard, game.selectedDeck)) {
+        moveCards(
+          game.highlightedDeck,
+          game.selectedDeck,
+          game.selectedCard,
+          setgame,
+          game
+        );
+        isHandComplete(game.highlightedDeck, game, setgame);
+        removeSelection(game, setgame);
+      } else {
+        removeSelection(game, setgame);
       }
+      /*  } */
     }
   }
   // eğer deste boş değilse bu sürüklenen destenin üstüne gelebiliyormu diye kontrol eder.
