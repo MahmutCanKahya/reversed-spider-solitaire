@@ -4,7 +4,7 @@ import GameScoreBoard from "components/GameScoreBoard";
 import {
   getCurrentGame,
   getHighScore,
-  saveGame,
+  saveGame
 } from "functions/local-storage";
 import _, { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ import {
   initGame,
   removeSelection,
   resetGame,
-  selectCard,
+  selectCard
 } from "../../functions/reversed-spider-solitaire";
 import { CardType, GameType } from "../../utils/types";
 import "./index.scss";
@@ -188,16 +188,14 @@ function GameScreen() {
           })}
         </div>
         <GameScoreBoard score={game.score} moves={game.numberOfMoves} />
-        <div className="remainderCards">
+        <div >
           {game.decks && game.decks[10]?.length > 0 && (
             <div
               onClick={(e) => {
                 distributeRemCards(game, setgame);
               }}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
+              
+              className="remainderCards"
             >
               {_.chunk(game.decks[10], 10).map((item, idx) => {
                 return <div key={idx} className="card__remcards"></div>;
