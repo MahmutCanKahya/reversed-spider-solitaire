@@ -31,7 +31,6 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
   for (let i = 0; i <= 9; i++) {
     decks[i][decks[i].length - 1].isDown = false;
   }
-  decks[0] = [];
   return {
     decks: decks,
     cards: shuffledCards,
