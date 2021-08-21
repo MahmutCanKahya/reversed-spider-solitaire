@@ -40,7 +40,12 @@ describe("gamepage-tests", () => {
       .should("have.css", "transform", "matrix(1.1, 0, 0, 1.1, 0, 0)");
   });
 
-  it.only("should each decks size increase when clicked remainder cards", () => {
+  it("should each decks size increase when clicked remainder cards", () => {
+    cy.get(".remainderCard").each((i) => {
+      console.log(i);
+    });
+    cy.get(".card__remcards").its("length").should("equal", 5);
     cy.get(".card__remcards").last().trigger("click");
+    cy.get(".card__remcards").its("length").should("equal", 4);
   });
 });

@@ -188,7 +188,7 @@ function GameScreen() {
           })}
         </div>
         <GameScoreBoard score={game.score} moves={game.numberOfMoves} />
-        <div>
+        <div className="remainderCards">
           {game.decks && game.decks[10]?.length > 0 && (
             <div
               onClick={(e) => {
