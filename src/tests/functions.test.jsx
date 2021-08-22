@@ -1,7 +1,11 @@
-import { initGame } from "../functions/reversed-spider-solitaire";
+import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
+import { configure } from "enzyme";
+import { initGame } from "functions/reversed-spider-solitaire";
+
+configure({ adapter: new Adapter() });
 
 describe("Game functions test", () => {
-  describe("Init game function test", () => {
+  describe("initGame function test", () => {
     it("should return cards 104", () => {
       const game = initGame();
 
@@ -12,5 +16,6 @@ describe("Game functions test", () => {
 
       expect(game.decks.length).toBe(11);
     });
+    
   });
 });

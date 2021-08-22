@@ -2,7 +2,8 @@ import * as _ from "lodash";
 import { INIT_GAME } from "screens/game-screen";
 import cardInfo from "../utils/card-config.json";
 import { CardType, GameType } from "../utils/types";
-import { getHighScore, removeCurrentGame, setHighScore } from "./local-storage";
+import { removeCurrentGame } from "./game-data";
+import { getHighScore, setHighScore } from "./high-score";
 
 // Oyunun başlangıcı için 8 destelik kart oluşturulur.
 //Bu kartlar karıştırılır ve yeni destelere ayrılır.
@@ -24,10 +25,11 @@ export const initGame = (): { decks: CardType[][]; cards: CardType[] } => {
     }
   });
   let shuffledCards = _.shuffle(cards);
-  const firstSplit = _.chunk(shuffledCards.slice(0, 24), 6); //ilk 4lü deste 6 lı
-  const secondSplit = _.chunk(shuffledCards.slice(24, 54), 5); //son 6lı deste 5  erli
+  let doubleSuffledCards = _.shuffle(shuffledCards);
+  const firstSplit = _.chunk(doubleSuffledCards.slice(0, 24), 6); //ilk 4lü deste 6 lı
+  const secondSplit = _.chunk(doubleSuffledCards.slice(24, 54), 5); //son 6lı deste 5  erli
   decks = [...firstSplit, ...secondSplit];
-  decks[10] = shuffledCards.slice(54);
+  decks[10] = doubleSuffledCards.slice(54);
   for (let i = 0; i <= 9; i++) {
     decks[i][decks[i].length - 1].isDown = false;
   }
@@ -103,6 +105,7 @@ export const moveCards = function (
   } catch (err) {
     console.log(err);
   }
+
   setgame((prevState) => ({
     ...prevState,
     decks: tempDeck,
@@ -242,6 +245,7 @@ export const selectCard = (
   setgame: React.Dispatch<React.SetStateAction<GameType>>
 ) => {
   //Eğer deste kart  hiç yoksa ve seçilen kart boş değilsse seçilen kartı holdera aktarır
+  console.log(card, deck, holder, game);
   if (holder && !isObjectEmpty(game.selectedCard)) {
     /* if (game.selectedCard.rank === "A") { */
     moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);

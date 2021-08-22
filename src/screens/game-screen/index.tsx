@@ -1,15 +1,11 @@
 import welldone from "assets/well-done-gif.gif";
 import GameNavBar from "components/GameNavBar";
 import GameScoreBoard from "components/GameScoreBoard";
-import {
-  getCurrentGame,
-  getHighScore,
-  saveGame
-} from "functions/local-storage";
+import { getCurrentGame, saveGame } from "functions/game-data";
+import { getHighScore } from "functions/high-score";
 import _, { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { useHistory } from "react-router-dom";
 import Card from "../../components/Card";
 import CardHolder from "../../components/CardHolder";
 import {
@@ -21,7 +17,7 @@ import {
   initGame,
   removeSelection,
   resetGame,
-  selectCard
+  selectCard,
 } from "../../functions/reversed-spider-solitaire";
 import { CardType, GameType } from "../../utils/types";
 import "./index.scss";
@@ -42,7 +38,7 @@ export const INIT_GAME = {
   hint: false,
 };
 
-function GameScreen() {
+const GameScreen = () => {
   const [game, setgame] = useState<GameType>(INIT_GAME);
   const [highScore, setHighScore] = useState<number>(0);
   useEffect(() => {
@@ -67,7 +63,6 @@ function GameScreen() {
   useEffect(() => {
     removeSelection(game, setgame);
   }, [game.hint]);
-  const history = useHistory();
 
   useEffect(() => {
     saveGame(game);
@@ -188,13 +183,12 @@ function GameScreen() {
           })}
         </div>
         <GameScoreBoard score={game.score} moves={game.numberOfMoves} />
-        <div >
+        <div>
           {game.decks && game.decks[10]?.length > 0 && (
             <div
               onClick={(e) => {
                 distributeRemCards(game, setgame);
               }}
-              
               className="remainderCards"
             >
               {_.chunk(game.decks[10], 10).map((item, idx) => {
@@ -206,6 +200,6 @@ function GameScreen() {
       </div>
     </div>
   );
-}
+};
 
 export default GameScreen;
