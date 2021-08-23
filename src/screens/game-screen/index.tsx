@@ -44,9 +44,7 @@ const GameScreen = () => {
   useEffect(() => {
     const localdata = getCurrentGame();
     const highScore = getHighScore();
-    console.log(highScore);
     setHighScore(highScore);
-    console.log(localdata);
     if (isEmpty(localdata)) {
       const val = initGame();
       setgame((prevState: GameType) => ({
@@ -67,7 +65,7 @@ const GameScreen = () => {
   useEffect(() => {
     saveGame(game);
   }, [game]);
-  console.log(game);
+
   return (
     <div className="game-wrapper">
       <Modal isOpen={game.hands === 8} contentLabel="WellDone">
@@ -99,7 +97,7 @@ const GameScreen = () => {
         {/* Eğer deste varsa 10 desteyi yanyana sıralar. */}
         {game.decks &&
           game.decks.slice(0, 10).map((deck, index) =>
-            deck.length == 0 ? (
+            deck.length === 0 ? (
               <div
                 id="holder"
                 key={index + "0"}

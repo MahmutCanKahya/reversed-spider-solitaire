@@ -37,7 +37,7 @@ export const Card: FC<CardProps> = ({
     } else {
       sethighlight("");
     }
-  }, [isDown, isSelected, isHighlighted, card.suit]);
+  }, [isDown, isSelected, isHighlighted, card.suit, card.isMatched]);
   return (
     <div className={"card" + down + select + highlight}>
       <div className="card__content card__rank-left">{card.rank}</div>

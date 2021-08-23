@@ -11,7 +11,6 @@ export const setHighScore = (highScore: number) => {
 export const getHighScore = (): number => {
   try {
     const _highScore = getLocalStorage<number>("highScore");
-    console.log(_highScore);
     if (typeof _highScore !== "number") {
       return 0;
     }

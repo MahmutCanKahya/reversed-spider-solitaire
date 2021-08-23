@@ -1,9 +1,11 @@
+/* eslint-disable array-callback-return */
 import * as _ from "lodash";
 import { INIT_GAME } from "screens/game-screen";
 import cardInfo from "../utils/card-config.json";
 import { CardType, GameType } from "../utils/types";
 import { removeCurrentGame } from "./game-data";
 import { getHighScore, setHighScore } from "./high-score";
+import { removeGameTime } from "./time";
 
 // Oyunun başlangıcı için 8 destelik kart oluşturulur.
 //Bu kartlar karıştırılır ve yeni destelere ayrılır.
@@ -43,6 +45,7 @@ export const resetGame = (
   setgame: React.Dispatch<React.SetStateAction<GameType>>
 ) => {
   removeCurrentGame();
+  removeGameTime();
   const reset = initGame();
   setgame({ ...INIT_GAME, decks: reset.decks, cards: reset.cards });
 };
@@ -157,7 +160,7 @@ export const isHandComplete = (
     var curHands = game.hands;
 
     // Eğer sıralama doğruysa ve destede başka kart varsa sonuncuyu açık göstermek için isDown false
-    if (tempDecks[curDeckIdx].length != 0) {
+    if (tempDecks[curDeckIdx].length !== 0) {
       tempDecks[curDeckIdx][tempDecks[curDeckIdx].length - 1].isDown = false;
     }
     setGameStatus(cardInfo.points.deskComplate, false, game, setgame);
@@ -192,7 +195,7 @@ export const checkMovable = (card: CardType, deck: CardType[]) => {
   });
   var curRank = getRank(card.rank);
   for (let i = 1; i < ranks.length; i++) {
-    if (curRank - ranks[i] != -1) return false;
+    if (curRank - ranks[i] !== -1) return false;
     curRank = ranks[i];
   }
   return true;
@@ -245,7 +248,6 @@ export const selectCard = (
   setgame: React.Dispatch<React.SetStateAction<GameType>>
 ) => {
   //Eğer deste kart  hiç yoksa ve seçilen kart boş değilsse seçilen kartı holdera aktarır
-  console.log(card, deck, holder, game);
   if (holder && !isObjectEmpty(game.selectedCard)) {
     /* if (game.selectedCard.rank === "A") { */
     moveCards(deck, game.selectedDeck, game.selectedCard, setgame, game);
@@ -362,10 +364,11 @@ export const drag = (
     )?.children[0] as any;
     var movex = event.pageX - game.x;
     var movey = event.pageY - game.y;
-    if (event.pageX == 0) {
-      var css = "z-index:9999;transform:translate(0px,0px);display:none;";
+    var css: string;
+    if (event.pageX === 0) {
+      css = "z-index:9999;transform:translate(0px,0px);display:none;";
     } else {
-      var css =
+      css =
         "z-index:9999;pointer-events: none; transform: scale(1.05, 1.05) rotate(0deg) translate(" +
         movex +
         "px, " +
@@ -390,14 +393,14 @@ export const dragEnter = (
         tempCard.isMatched = false;
       })
     );
-  } else if (!isObjectEmpty(card) && card != game.selectedCard) {
-    if (game.selected.indexOf(card) != -1) return;
+  } else if (!isObjectEmpty(card) && card !== game.selectedCard) {
+    if (game.selected.indexOf(card) !== -1) return;
 
     var deckIdx = tempDecks.indexOf(deck);
     var cardIdx = tempDecks[deckIdx].indexOf(card);
 
     //son elemanın üstüne getirilmediyse fonksiyondan çıkar
-    if (cardIdx != tempDecks[deckIdx].length - 1) return;
+    if (cardIdx !== tempDecks[deckIdx].length - 1) return;
 
     tempDecks.map((deck) =>
       deck.map((tempCard) => {
@@ -528,5 +531,5 @@ export const distributeRemCards = (
 
 //Obje boşmu kontrolü
 export const isObjectEmpty = (obj: any): boolean => {
-  return Object.keys(obj).length == 0;
+  return Object.keys(obj).length === 0;
 };

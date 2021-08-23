@@ -3,7 +3,6 @@ import GameScreen from "./screens/game-screen";
 import HomeScreen from "./screens/home-screen";
 import routes from "./utils/route-config.json";
 function App() {
-  console.log(routes.game);
   return (
     <Router>
       <Switch>
