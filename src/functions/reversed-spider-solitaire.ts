@@ -1,8 +1,8 @@
 /* eslint-disable array-callback-return */
 import * as _ from "lodash";
 import { INIT_GAME } from "screens/game-screen";
-import cardInfo from "../utils/card-config.json";
-import { CardType, GameType } from "../utils/types";
+import cardInfo from "utils/card-config.json";
+import { CardType, GameType } from "utils/types";
 import { removeCurrentGame } from "./game-data";
 import { getHighScore, setHighScore } from "./high-score";
 import { removeGameTime } from "./time";

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import GameScreen from "./screens/game-screen";
-import HomeScreen from "./screens/home-screen";
-import routes from "./utils/route-config.json";
+import GameScreen from "screens/game-screen";
+import HomeScreen from "screens/home-screen";
+import routes from "utils/route-config.json";
 function App() {
   return (
     <Router>

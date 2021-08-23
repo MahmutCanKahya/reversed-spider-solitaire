@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
-import cardInfo from "../../utils/card-config.json";
-import { CardType } from "../../utils/types";
+import cardInfo from "utils/card-config.json";
+import { CardType } from "utils/types";
 import "./Card.scss";
 
 interface CardProps {

@@ -1,13 +1,10 @@
 import welldone from "assets/well-done-gif.gif";
+import Card from "components/Card";
+import CardHolder from "components/CardHolder";
 import GameNavBar from "components/GameNavBar";
 import GameScoreBoard from "components/GameScoreBoard";
 import { getCurrentGame, saveGame } from "functions/game-data";
 import { getHighScore } from "functions/high-score";
-import _, { isEmpty } from "lodash";
-import React, { useEffect, useState } from "react";
-import Modal from "react-modal";
-import Card from "../../components/Card";
-import CardHolder from "../../components/CardHolder";
 import {
   distributeRemCards,
   drag,
@@ -18,8 +15,11 @@ import {
   removeSelection,
   resetGame,
   selectCard,
-} from "../../functions/reversed-spider-solitaire";
-import { CardType, GameType } from "../../utils/types";
+} from "functions/reversed-spider-solitaire";
+import _, { isEmpty } from "lodash";
+import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
+import { CardType, GameType } from "utils/types";
 import "./index.scss";
 
 export const INIT_GAME = {

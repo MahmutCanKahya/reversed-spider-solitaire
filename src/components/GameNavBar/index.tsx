@@ -1,11 +1,12 @@
+import hintOff from "assets/hint-off.svg";
+import hintOn from "assets/hint-on.svg";
+import leftArrow from "assets/left-arrow.svg";
 import { resetGame } from "functions/reversed-spider-solitaire";
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { useHistory } from "react-router-dom";
+import Routes from "utils/route-config.json";
 import { GameType } from "utils/types";
-import hintOff from "../../assets/hint-off.svg";
-import hintOn from "../../assets/hint-on.svg";
-import leftArrow from "../../assets/left-arrow.svg";
 import "./index.scss";
 
 interface GameNavBarProps {
@@ -44,7 +45,7 @@ const GameNavBar: React.FC<GameNavBarProps> = ({ hint, setgame }) => {
         <img
           src={leftArrow}
           alt="left-arrow"
-          onClick={() => history.goBack()}
+          onClick={() => history.push(Routes.home)}
         />
       </div>
       <div className="title">REVERSED SPIDER SOLITAIRE</div>

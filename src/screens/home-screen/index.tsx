@@ -1,7 +1,7 @@
 import { getHighScore } from "functions/high-score";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import routes from "../../utils/route-config.json";
+import routes from "utils/route-config.json";
 import "./index.scss";
 
 function HomeScreen() {
